@@ -1,0 +1,280 @@
+{
+  "description": "Deterministic benchmark tasks for dmn-wanderer.",
+  "version": "1.0",
+  "scoring": {
+    "success": "keyword heuristic on agent answer (deterministic; see app/experiment.py)",
+    "rubric": "one 0/1 check per expected_property via keyword heuristics"
+  },
+  "tasks": [
+    {
+      "id": "task-001",
+      "category": "delayed_recall",
+      "context": "On Monday you were told the instrument is calibrated to emit at 772 nm. On Tuesday a memo confirmed the team stores samples in cold room B. Wednesday notes mention nothing else about the instrument.",
+      "question": "Four days later, what wavelength was the instrument calibrated to emit, based on the earlier record?",
+      "expected_properties": ["recalls delayed fact", "does not invent details"],
+      "reference_answer": "772 nm.",
+      "keywords": ["772"]
+    },
+    {
+      "id": "task-002",
+      "category": "delayed_recall",
+      "context": "In experiment session one, the model achieved recall 0.81 after reflection. Session two notes focus only on token cost.",
+      "question": "Which session reported the recall of 0.81 and is that value still the most recent recall figure?",
+      "expected_properties": ["recalls delayed fact", "reports uncertainty about recency"],
+      "reference_answer": "Session one reported 0.81; no later recall figure appears, so it remains the most recent on record.",
+      "keywords": ["session one", "0.81"]
+    },
+    {
+      "id": "task-003",
+      "category": "delayed_recall",
+      "context": "Day 1: password rotation policy is 90 days. Day 30: the ops team documents that the policy will change next quarter. No further day's notes mention rotation.",
+      "question": "According to the records, what is the documented rotation interval?",
+      "expected_properties": ["recalls delayed fact", "distinguishes prior fact from future change"],
+      "reference_answer": "90 days.",
+      "keywords": ["90"]
+    },
+    {
+      "id": "task-004",
+      "category": "contradiction_detection",
+      "context": "The staging environment is currently disabled for maintenance. However, the latest deploy log says the staging environment is active and receiving traffic.",
+      "question": "Is there a contradiction in these statements, and which one appears to be a mistaken state report?",
+      "expected_properties": ["detects contradiction", "does not pick a fact first"],
+      "reference_answer": "Yes, they contradict; the deploy log conflicts with the maintenance status.",
+      "keywords": ["contradict", "conflict", "inconsistent"]
+    },
+    {
+      "id": "task-005",
+      "category": "contradiction_detection",
+      "context": "Record A: the retry budget is exhausted. Record B: the retry budget still has seven attempts remaining per the dashboard.",
+      "question": "Do records A and B agree about the retry budget? Explain which is inconsistent.",
+      "expected_properties": ["detects contradiction"],
+      "reference_answer": "They disagree; one of the two state reports is wrong.",
+      "keywords": ["disagree", "contradict", "wrong"]
+    },
+    {
+      "id": "task-006",
+      "category": "contradiction_detection",
+      "context": "The gatekeeper rule says all changes require two approvals. The recent change log shows a config change applied with a single approval.",
+      "question": "Is there a conflict between the rule and the log, and what does it imply?",
+      "expected_properties": ["detects contradiction", "does not treat the violation as the rule"],
+      "reference_answer": "Yes, a conflict; the log shows the rule was violated.",
+      "keywords": ["conflict", "violated", "contradict"]
+    },
+    {
+      "id": "task-007",
+      "category": "long_horizon_planning",
+      "context": "Objective: migrate a service to a new region by Friday. Monday: freeze changes. Wednesday: run the dry-run replicate. Thursday: flip DNS. Friday: verify and rollback plan ready.",
+      "question": "What is the ordered plan for the migration week?",
+      "expected_properties": ["plans multiple steps", "keeps order"],
+      "reference_answer": "Monday freeze, Wednesday dry-run replicate, Thursday DNS flip, Friday verify with rollback.",
+      "keywords": ["Monday", "Wednesday", "Thursday", "Friday"]
+    },
+    {
+      "id": "task-008",
+      "category": "long_horizon_planning",
+      "context": "Goal for the quarter: reduce first-bug response time. Constraints: cannot add headcount; must ship a fix set by month three; telemetry data is available in month one.",
+      "question": "Sketch a phased plan that respects the headcount and telemetry constraints.",
+      "expected_properties": ["plans multiple steps", "respects constraints"],
+      "reference_answer": "Month one: instrument response telemetry. Month two: route triage rules using that data. Month three: ship fix set and measure.",
+      "keywords": ["telemetry", "month", "triage"]
+    },
+    {
+      "id": "task-009",
+      "category": "long_horizon_planning",
+      "context": "You must prepare a paper submission. Deadline in three weeks. You have drafting, an experiment to re-run, and referee comments to address. You can do one thing per day.",
+      "question": "Give a day-by-day schedule covering the three work streams before the deadline.",
+      "expected_properties": ["plans multiple steps"],
+      "reference_answer": "Week one: rerun experiment, begin revisions. Week two: finish drafting and integrate referee comments. Week three: final pass and submit.",
+      "keywords": ["experiment", "revision", "submit"]
+    },
+    {
+      "id": "task-010",
+      "category": "counterfactual_reasoning",
+      "context": "The agent scored 0.5 without memory and 0.8 with relevant memory. In this trial the agent trained on a shuffled corpus.",
+      "question": "If the corpus had not been shuffled, how might the memory effect have differed?",
+      "expected_properties": ["identifies changed assumption", "does not treat speculation as fact"],
+      "reference_answer": "Shuffling is extra noise; without it the memory benefit might have been larger, but this is speculation.",
+      "keywords": ["speculat", "if", "shuffl"]
+    },
+    {
+      "id": "task-011",
+      "category": "counterfactual_reasoning",
+      "context": "Deployment was rolled back because the cache flush coincided with the incident window.",
+      "question": "If the cache flush had been scheduled an hour earlier, what might have changed?",
+      "expected_properties": ["identifies changed assumption", "labels speculation"],
+      "reference_answer": "The incident might not have overlapped the flush; this is a counterfactual, not evidence.",
+      "keywords": ["might", "if", "counterfactual", "speculat"]
+    },
+    {
+      "id": "task-012",
+      "category": "counterfactual_reasoning",
+      "context": "Recall rose when the model reflected before answering. The evaluation used a fixed seed this time.",
+      "question": "Had the seed varied, would the recall gain still be attributable to reflection?",
+      "expected_properties": ["identifies changed assumption"],
+      "reference_answer": "Not necessarily; the fixed seed controls variance, so with varying seeds the gain could shrink or vanish.",
+      "keywords": ["seed", "not necessarily", "variance"]
+    },
+    {
+      "id": "task-013",
+      "category": "hidden_state_inference",
+      "context": "The system stopped sending alerts at 02:00. Health checks still pass. Logs show no maintenance windows.",
+      "question": "What hidden state best explains the missing alerts?",
+      "expected_properties": ["infers hidden state", "reports uncertainty"],
+      "reference_answer": "Alerting configuration or its channel likely changed; health passing suggests transport, not compute, failure.",
+      "keywords": ["alert", "configur", "channel", "uncertain"]
+    },
+    {
+      "id": "task-014",
+      "category": "hidden_state_inference",
+      "context": "Every user report takes twice as long this week. No commit touched the service. Load graphs are unchanged.",
+      "question": "Infer the most probable hidden cause.",
+      "expected_properties": ["infers hidden state", "does not jump to one fact"],
+      "reference_answer": "An upstream dependency or network path likely degraded; commit and load ruled out as primary causes.",
+      "keywords": ["upstream", "dependency", "network", "degrad"]
+    },
+    {
+      "id": "task-015",
+      "category": "hidden_state_inference",
+      "context": "The QA suite passed locally but failed in CI twice in a row. The Docker base image was not pinned.",
+      "question": "What hidden difference between environments might explain the CI failures?",
+      "expected_properties": ["infers hidden state", "suggests verification"],
+      "reference_answer": "An unpinned base image or environment drift likely differs between local and CI.",
+      "keywords": ["base image", "image", "drift", "pinned"]
+    },
+    {
+      "id": "task-016",
+      "category": "analogical_transfer",
+      "context": "Past project: a flaky test suite was fixed by pinning versions and adding retries at the flakiest points. Current project: CI fails intermittently without a clear cause.",
+      "question": "What could transfer from the past fix to the current intermittent CI failures?",
+      "expected_properties": ["transfers analogy", "does not copy blindly"],
+      "reference_answer": "Pin dependencies and add targeted retries at the observed flaky stage, adapted to current evidence.",
+      "keywords": ["pin", "retry", "targeted", "adapt"]
+    },
+    {
+      "id": "task-017",
+      "category": "analogical_transfer",
+      "context": "In a bookkeeping setting, a double-entry ledger catches arithmetic drift. A model observability feed currently shows drifting log volume with no reconciliation step.",
+      "question": "What is the analogous safeguard for the observability feed?",
+      "expected_properties": ["transfers analogy"],
+      "reference_answer": "Introduce a reconciliation/reconciliation check that cross-checks two independent views of log volume.",
+      "keywords": ["reconcil", "cross-check", "independent"]
+    },
+    {
+      "id": "task-018",
+      "category": "analogical_transfer",
+      "context": "Gardening: a plant's roots grow healthier when the soil is aerated, not just watered. You maintain a knowledge base that only ever gets new facts appended, never revised.",
+      "question": "What maintenance practice does the soil analogy suggest for the knowledge base?",
+      "expected_properties": ["transfers analogy"],
+      "reference_answer": "Periodically revise and prune stale entries, not only append new ones.",
+      "keywords": ["prune", "revis", "maintain"]
+    },
+    {
+      "id": "task-019",
+      "category": "social_belief_reasoning",
+      "context": "Alice tells you her team's deploy is on time. Bob, who runs the deploy calendar, keeps the deploy page updated. The page shows two deploys delayed this week.",
+      "question": "Whose statement likely reflects the true state, and why?",
+      "expected_properties": ["social-belief reasoning", "does not treat belief as fact"],
+      "reference_answer": "The calendar is a checked artifact; Alice may be mistaken, and neither statement is proof independent of the artifact.",
+      "keywords": ["artifact", "calendar", "checked", "mistaken"]
+    },
+    {
+      "id": "task-020",
+      "category": "social_belief_reasoning",
+      "context": "A teammate says the outage was caused by the network team. The network team's own postmortem says the cause was an expired certificate on an internal proxy.",
+      "question": "Which description has the stronger evidence basis, and how should the disagreement be treated?",
+      "expected_properties": ["social-belief reasoning"],
+      "reference_answer": "The postmortem with artifact-level detail; treat the teammate's claim as unverified opinion.",
+      "keywords": ["postmortem", "artifact", "unverified", "opinion"]
+    },
+    {
+      "id": "task-021",
+      "category": "social_belief_reasoning",
+      "context": "Two engineers disagree about whether the cache layer is the bottleneck. One cites a flame graph; the other cites a hunch from an old incident.",
+      "question": "How should a decision-maker weight these two beliefs?",
+      "expected_properties": ["social-belief reasoning", "reports uncertainty"],
+      "reference_answer": "Weight the flame-graph evidence far higher than the hunch; treat the hunch as a hypothesis to test.",
+      "keywords": ["flame", "evidence", "hypothesis", "hunch"]
+    },
+    {
+      "id": "task-022",
+      "category": "noisy_observations",
+      "context": "Three monitors report error rate spikes at 10:10, 10:15, and 11:04. One monitor is known to lag and double-count.",
+      "question": "Which spike is most likely a monitoring artifact?",
+      "expected_properties": ["handles noisy observation", "expresses uncertainty"],
+      "reference_answer": "The 11:04 spike is suspect given the known laggy/double-counting monitor; uncertainty remains.",
+      "keywords": ["11:04", "artifact", "lag", "uncertain"]
+    },
+    {
+      "id": "task-023",
+      "category": "noisy_observations",
+      "context": "A sensor reads temperature 21.4, then 21.4, then 88.9, then 21.5. The sensor occasionally transposes digits.",
+      "question": "Estimate the likely true reading and flag the outlier.",
+      "expected_properties": ["handles noisy observation"],
+      "reference_answer": "88.9 is the outlier; likely true value is about 21.4.",
+      "keywords": ["88", "outlier", "21"]
+    },
+    {
+      "id": "task-024",
+      "category": "noisy_observations",
+      "context": "Logs show an error once, then nothing for an hour, then the same error at double rate. The sampler drops events during bursts.",
+      "question": "What should you conclude with the sampling caveat in mind?",
+      "expected_properties": ["handles noisy observation", "does not overclaim"],
+      "reference_answer": "The error may be under-counted during the burst due to sampling; treat counts as lower bounds.",
+      "keywords": ["sampl", "lower bound", "under-count", "caveat"]
+    },
+    {
+      "id": "task-025",
+      "category": "changing_rules",
+      "context": "The retention policy was 30 days. Last month the policy changed to 90 days. A cleanup job still runs against the 30-day window.",
+      "question": "Is the cleanup job consistent with the current rule?",
+      "expected_properties": ["adapts to rule change"],
+      "reference_answer": "No, the job uses the outdated 30-day window and should be updated to 90 days.",
+      "keywords": ["30", "90", "outdated", "update"]
+    },
+    {
+      "id": "task-026",
+      "category": "changing_rules",
+      "context": "Round one scoring used exact match. Round two switched to semantic similarity. A submission scored well in round one criteria.",
+      "question": "Should the submission be re-evaluated, and under which rule?",
+      "expected_properties": ["adapts to rule change"],
+      "reference_answer": "Yes, re-evaluate under semantic similarity, the current rule in round two.",
+      "keywords": ["semantic", "round two", "re-evaluate", "current"]
+    },
+    {
+      "id": "task-027",
+      "category": "changing_rules",
+      "context": "Previously, no approval was needed for read-only access. Now, all access grants, including read-only, require approval per the new policy.",
+      "question": "Does an existing read-only grant remain valid without a new approval?",
+      "expected_properties": ["adapts to rule change"],
+      "reference_answer": "It should be re-verified under the new policy; the old grant alone no longer satisfies the new rule.",
+      "keywords": ["approval", "new policy", "re-verified", "no longer"]
+    },
+    {
+      "id": "task-028",
+      "category": "hypothesis_generation",
+      "context": "A/B test: group A saw a 3% recall gain but also 12% higher latency. Group B saw no change. Model version was identical.",
+      "question": "Propose a candidate explanation to test next.",
+      "expected_properties": ["generates hypothesis", "proposes a test", "labels speculation"],
+      "reference_answer": "The latency difference may have caused the recall gain via more compute budget per query; test by equalizing latency.",
+      "keywords": ["hypothes", "speculat", "latency", "test"]
+    },
+    {
+      "id": "task-029",
+      "category": "hypothesis_generation",
+      "context": "Retrieval quality is unchanged, yet answers improved after wandering began. Memory size is growing steadily.",
+      "question": "What is one plausible mechanism for the improvement, and how would you test it?",
+      "expected_properties": ["generates hypothesis", "proposes a test"],
+      "reference_answer": "More diverse retrieval paths may surface useful context indirectly; test by ablating wandering while keeping memory size fixed.",
+      "keywords": ["hypothes", "ablat", "test", "divers"]
+    },
+    {
+      "id": "task-030",
+      "category": "hypothesis_generation",
+      "context": "Two models, same prompt, same memory, one answers faster and consistently better on scheduling tasks.",
+      "question": "State a testable hypothesis for the difference.",
+      "expected_properties": ["generates hypothesis", "proposes a test"],
+      "reference_answer": "Model-level priorization or reasoning-depth differences explain the gap; test by holding output length constant across models.",
+      "keywords": ["hypothes", "test", "length", "depth"]
+    }
+  ]
+}
