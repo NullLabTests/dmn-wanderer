@@ -42,6 +42,16 @@ class LanguageModel:
         """Rough token estimate: 4 chars/token. Accurate enough for research."""
         return max(1, len(text) // 4)
 
+    @classmethod
+    def from_env(cls, cfg: Optional[Config] = None) -> "LanguageModel":
+        """Thin alias for get_language_model(): build the configured provider.
+
+        Convenience for callers that prefer an instance-style entry point
+        (``LanguageModel.from_env().generate(...)``) over the module-level
+        factory. Provider behavior is unchanged.
+        """
+        return get_language_model(cfg)
+
 
 def _clamp_float(value: Any, lo: float = 0.0, hi: float = 1.0, default: float = 0.5) -> float:
     try:

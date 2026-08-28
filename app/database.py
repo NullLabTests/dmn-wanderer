@@ -450,19 +450,33 @@ def rows_to_memories(rows: List[dict]) -> List[Memory]:
 
 
 def rows_to_beliefs(rows: List[dict]) -> List[Belief]:
+    """Build Belief objects, skipping rows with unreadable/malformed data.
+
+    The evidence column is a JSON list of EvidenceRef dicts. A legacy or
+    hand-edited row can contain malformed JSON or an unrecognized ``kind``,
+    which would otherwise raise and take down the whole belief pipeline.
+    Defensive per-row handling keeps loading resilient (one bad row is
+    skipped, never fatal), matching the robustness guarantees elsewhere.
+    """
     beliefs = []
     for r in rows:
-        evidence = json.loads(r["evidence"] or "[]")
-        beliefs.append(Belief(
-            id=r["id"],
-            content=r["content"],
-            belief_type=r["belief_type"],
-            confidence=r["confidence"],
-            evidence=evidence,
-            created_at=r["created_at"],
-            updated_at=r["updated_at"],
-            expires_at=r["expires_at"],
-            status=r["status"],
-            superseded_by=r["superseded_by"],
-        ))
+        try:
+            evidence = json.loads(r["evidence"] or "[]")
+        except (TypeError, ValueError):
+            evidence = []
+        try:
+            beliefs.append(Belief(
+                id=r["id"],
+                content=r["content"],
+                belief_type=r["belief_type"],
+                confidence=r["confidence"],
+                evidence=evidence,
+                created_at=r["created_at"],
+                updated_at=r["updated_at"],
+                expires_at=r["expires_at"],
+                status=r["status"],
+                superseded_by=r["superseded_by"],
+            ))
+        except Exception:
+            continue
     return beliefs
