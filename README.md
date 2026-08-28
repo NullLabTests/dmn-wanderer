@@ -189,6 +189,19 @@ evaluator bias, small benchmarks, and the OpenCode-selected-model caveats.
 
 See [docs/architecture.md](docs/architecture.md).
 
+## Documentation
+
+| Doc | What's inside |
+|---|---|
+| [Architecture](docs/architecture.md) | System diagram, data flow, memory & belief lifecycles, active vs. reflection vs. wandering modes, provider neutrality |
+| [Research protocol](docs/research_protocol.md) | Conditions, procedure, metrics table, contamination controls, reproducibility |
+| [Limitations](docs/limitations.md) | The DMN analogy, hallucination, benchmark heuristics, OpenCode model caveats |
+| [OpenCode integration](docs/opencode-integration.md) | How the `/models` selection is used, NDJSON parsing, commands, caveats |
+| [Final report](docs/final_report.md) | What was delivered, test + benchmark results, live run notes, next experiments |
+
+> Want a repo social preview? A 1200×630 [`social-preview.png`](social-preview.png) ships
+> in the repo root — upload it in **Settings → Social preview** on GitHub.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
