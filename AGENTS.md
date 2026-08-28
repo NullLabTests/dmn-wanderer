@@ -57,4 +57,5 @@ MODEL_PROVIDER=opencode python experiments/run_benchmark.py --provider opencode
 
 `app/` source, `tests/` pytest suite (no API key), `experiments/` benchmark
 tasks + runner + results, `prompts/` OpenCode-compatible prompt files,
-`docs/` architecture + protocol + limitations + opencode-integration notes.
+`docs/` architecture + protocol + limitations + opencode-integration notes,
+`demo/` asciinema recording + rendered GIF/MP4 of a live wandering run.

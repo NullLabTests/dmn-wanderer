@@ -17,6 +17,24 @@ subjective experience, a biological default mode network, or a literal mind.
 The project deliberately avoids those claims and documents why in
 [docs/limitations.md](docs/limitations.md).
 
+## See it in action
+
+A real 31-second run of the wandering mode against a fresh database, using
+the model selected in your OpenCode `/models` setting (recorded live via
+asciinema — no API key):
+
+![dmn-wanderer live wandering demo](demo/live-wandering.gif)
+
+- [`demo/live-wandering.mp4`](demo/live-wandering.mp4) — video version
+- [`demo/live-wandering.cast`](demo/live-wandering.cast) — the raw asciinema
+  recording (replay with `asciinema play demo/live-wandering.cast` or any
+  [asciinema player](https://github.com/asciinema/asciinema-player))
+
+The movie shows: fresh database → a few memories are settled → a
+`serendipitous` wander run generates five labeled `[SPECULATION]` items with
+supporting memory ids, per-item confidence/novelty/relevance/testability, and
+proposed experiments. Nothing is promoted to fact.
+
 ## Research question
 
 Does a periodic, internally generated exploration process improve useful
